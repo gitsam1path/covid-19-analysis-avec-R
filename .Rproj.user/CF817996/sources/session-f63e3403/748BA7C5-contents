@@ -1,0 +1,94 @@
+#jeu de données
+laptops <- read.csv("C:\\Users\\kombi\\OneDrive\\Bureau\\Nouveau dossier (3)\\laptops.csv", sep = ",")
+
+# On charge les packages
+library(car)
+library(ggplot2)
+library(lm.beta)
+
+# 4) Visualiseation du contenu d'un tableau de données 
+
+View(laptops)
+
+# 5) Afficher les 6 premières lignes
+
+head(laptops)
+
+# 6) Attribuer aux colonnes du dataset les noms suivants 
+
+colnames(laptops) <- c("Prix", "Taille", "RAM", "Disque", "Ports", "Marque", "Poids")
+
+# 7) Afficher les mesures statistiques de base 
+
+summary(laptops)
+
+# 8)prix maximal et minimal 
+max(laptops$Prix) 
+min(laptops$Prix)
+
+# 9) nombre minimal de ports 
+min(laptops$Ports) 
+
+# 10)taille moyenne d’un laptop
+mean(laptops$Taille) 
+
+# 11)valeur médiane du poids en onces
+median(laptops$Poids) 
+
+# 12)caractéristiques 
+length(laptops$Marque)
+class(laptops$Marque) 
+mode(laptops$Marque) 
+
+# 13) 
+# Afficher le nuage de point à l’aide de ggplot2
+ggplot(laptops, aes(x = Disque, y = Prix)) + geom_point()
+# On remarque que le nuage de points est dispersé 
+
+# 14)modèle linéaire 
+
+model1 <- lm(Prix ~ Disque, data = laptops) 
+ggplot(laptops, aes(x = Disque, y = Prix)) + geom_point() + geom_smooth(method = "lm")
+
+# 15)Le modèle n'est pas de bonne qualité.
+
+# 16)covariance entre les variables Prix et Disque
+cov(laptops$Prix, laptops$Disque) 
+# La covariance est positive
+
+# 17)coefficient de corrélation.
+cor(laptops$Prix, laptops$Disque) # 0.14
+
+# 18) coefficient de détermination
+summary(model1)$r.squared 
+# Le coefficient de détermination est très faible
+
+# 19) Afficher les mesures statistiques pour le modèle linéaire obtenu.
+summary(model1)
+
+# 21)  Etablir le modèle linéaire multiple (model2) 
+modele2 <- lm(Prix ~ Disque + Taille + Ports + Poids + RAM, data = laptops)
+
+# 22)
+summary(model2)
+
+#23) Déterminer la valeur de VIF 
+
+modele2 <- laptops[, -6]
+
+vif(modele2)
+
+# 24)
+cor(laptops[,-6])
+
+# 25)corriger le modèle en ignorant la variable poids.
+
+model4 <- lm(Prix ~ Disque + Taille + Ports + RAM, data = laptops) 
+summary(model4)
+
+#26) On propose de corriger le modèle en ignorant la variable RAM.
+
+model5 <- lm(Prix ~ Disque + Taille + Ports, data = laptops) 
+summary(model5)
+
+
